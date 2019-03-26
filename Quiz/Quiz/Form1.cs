@@ -16,10 +16,59 @@ namespace Quiz
     {
         public Form1()
         {
-            
+
             InitializeComponent();
         }
-        //bool haveFile = false;
+
+        string[] lines, lang;
+        int[] Nums;
+        int elemIndex = 0, correct = 0;
+        bool toCorrect = false;
+
+        private void randQueueGen()
+        {
+            Random rnd = new Random();
+            int[] nums = new int[lines.Length - 1];
+            for (int i = 0; i < lines.Length - 1; i++)
+            {
+                nums[i] = i + 1;
+            }
+            Nums = nums.OrderBy(x => rnd.Next()).ToArray();
+        }
+
+        private void endBoard()
+        {
+            MessageBox.Show("Your score : " + correct.ToString() +
+                " / " + (lines.Length - 1).ToString());
+            resetValues();
+            return;
+        }
+
+        private void resetValues()
+        {
+            openFileDialog1.FileName = "openFileDialog1";
+            button2.Visible = false;
+            button1.Visible = true;
+            label1.Text = "";
+            label2.Text = "";
+            label4.Text = "";
+            label1.Visible = false;
+            label2.Visible = false;
+            label4.Visible = false;
+            textBox1.Text = "";
+            textBox2.Text = "";
+            textBox3.Text = "";
+            textBox1.Visible = false;
+            textBox2.Visible = false;
+            textBox3.Visible = false;
+            elemIndex = 0;
+            correct = 0;
+            toCorrect = false;
+            Nums = null;
+            lines = null;
+            lang = null;
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
             if (openFileDialog1.FileName == "openFileDialog1")
@@ -32,17 +81,24 @@ namespace Quiz
                 }
             }
             //textBox1.Text = openFileDialog1.FileName;
-            String[] lines = File.ReadAllLines(@openFileDialog1.FileName, Encoding.UTF32);
+            lines = File.ReadAllLines(@openFileDialog1.FileName, Encoding.UTF32);
             //MessageBox.Show(lines[0]+"\n"+lines[2]);
             //MessageBox.Show(lines.Length.ToString());
+            lang = lines[0].Split(' ');
             button2.Visible = true;
             button1.Visible = false;
-            label4.Text = "0 / " + (lines.Length-1).ToString();
+            label4.Text = "1 / " + (lines.Length - 1).ToString();
             label4.Visible = true;
-            label1.Text = "Pl";
-            label2.Text = "En";
+            label1.Text = lang[0];
+            label2.Text = lang[1];
             label1.Visible = true;
             label2.Visible = true;
+            randQueueGen();
+            elemIndex = 0;
+            lang = lines[Nums[elemIndex]].Split(' ');
+            textBox1.Text = lang[0];
+            textBox1.Visible = true;
+            textBox2.Visible = true;
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
@@ -50,9 +106,59 @@ namespace Quiz
             openFileDialog1.ShowDialog();
         }
 
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        {
+        //    MessageBox.Show("Dziala");
+
+            if (e.Control == true && e.KeyCode == Keys.R)
+                {
+                MessageBox.Show("Dziala");
+
+                if (button2.Visible == true)
+                {
+                    button2.PerformClick();
+                }
+            }
+        }
+
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            resetValues();
+        }
 
+        private void button2_Click(object sender, EventArgs e)
+        {
+            //Nums[elemIndex];
+            if (textBox2.Text == lang[1])
+            {
+                if (!toCorrect)
+                {
+                    correct++;
+                }
+                toCorrect = false;
+                MessageBox.Show("Correct!");
+                if (elemIndex+1 == lines.Length - 1)
+                {
+                    endBoard();
+                    return;
+                }
+                elemIndex++;
+                label4.Text = (elemIndex + 1).ToString() + " / " + (lines.Length - 1).ToString();
+                lang = lines[Nums[elemIndex]].Split(' ');
+                textBox1.Text = lang[0];
+                label3.Visible = false;
+                textBox3.Visible = false;
+                textBox2.Text = "";
+            }
+            else
+            {
+
+                toCorrect = true;
+                MessageBox.Show("Not correct :(");
+                textBox3.Text = lang[1];
+                label3.Visible = true;
+                textBox3.Visible = true;
+            }
         }
     }
 }
