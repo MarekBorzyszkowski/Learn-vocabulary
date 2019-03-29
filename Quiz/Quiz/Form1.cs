@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -54,6 +55,7 @@ namespace Quiz
             label4.Text = "";
             label1.Visible = false;
             label2.Visible = false;
+            label3.Visible = false;
             label4.Visible = false;
             textBox1.Text = "";
             textBox2.Text = "";
@@ -67,6 +69,11 @@ namespace Quiz
             Nums = null;
             lines = null;
             lang = null;
+            progressBar1.Visible = false;
+            progressBar1.Value = 0;
+            button3.Visible = true;
+            checkBox1.Visible = true;
+            checkBox1.Checked = false;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -81,10 +88,21 @@ namespace Quiz
                 }
             }
             //textBox1.Text = openFileDialog1.FileName;
-            lines = File.ReadAllLines(@openFileDialog1.FileName, Encoding.UTF32);
+            try
+            {
+                lines = File.ReadAllLines(@openFileDialog1.FileName, Encoding.UTF32);
+            }
+            catch(Exception a)
+            {
+                Console.WriteLine("{0} Exception caught.", e);
+            }
             //MessageBox.Show(lines[0]+"\n"+lines[2]);
             //MessageBox.Show(lines.Length.ToString());
             lang = lines[0].Split(' ');
+            if (checkBox1.Checked == true)
+            {
+                Reverse();
+            }
             button2.Visible = true;
             button1.Visible = false;
             label4.Text = "1 / " + (lines.Length - 1).ToString();
@@ -96,9 +114,16 @@ namespace Quiz
             randQueueGen();
             elemIndex = 0;
             lang = lines[Nums[elemIndex]].Split(' ');
+            if (checkBox1.Checked == true)
+            {
+                Reverse();
+            }
             textBox1.Text = lang[0];
             textBox1.Visible = true;
             textBox2.Visible = true;
+            progressBar1.Visible = true;
+            button3.Visible = false;
+            checkBox1.Visible = false;
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
@@ -121,6 +146,18 @@ namespace Quiz
             }
         }
 
+        private void Reverse()
+        {
+            string a = lang[0];
+            lang[0] = lang[1];
+            lang[1] = a;
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            Process.Start("notepad.exe");
+        }
+
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
             resetValues();
@@ -131,6 +168,8 @@ namespace Quiz
             //Nums[elemIndex];
             if (textBox2.Text == lang[1])
             {
+                
+                progressBar1.Increment(100 / (lines.Length - 1));
                 if (!toCorrect)
                 {
                     correct++;
@@ -145,6 +184,10 @@ namespace Quiz
                 elemIndex++;
                 label4.Text = (elemIndex + 1).ToString() + " / " + (lines.Length - 1).ToString();
                 lang = lines[Nums[elemIndex]].Split(' ');
+                if (checkBox1.Checked == true)
+                {
+                    Reverse();
+                }
                 textBox1.Text = lang[0];
                 label3.Visible = false;
                 textBox3.Visible = false;
@@ -162,3 +205,4 @@ namespace Quiz
         }
     }
 }
+
