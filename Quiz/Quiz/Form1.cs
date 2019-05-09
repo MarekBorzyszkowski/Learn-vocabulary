@@ -83,7 +83,7 @@ namespace Quiz
                 openFileDialog1.ShowDialog();
                 if (openFileDialog1.FileName == "openFileDialog1")
                 {
-                    MessageBox.Show("Choose a .txt file with words \n for quiz or create one");
+                    MessageBox.Show("Choose a .txt file with words \n for quiz or create one", "ERROR");
                     return;
                 }
             }
@@ -158,6 +158,11 @@ namespace Quiz
             Process.Start("notepad.exe");
         }
 
+        private void authorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Marek\nBorzyszkowski", "Author:");
+        }
+
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
             resetValues();
@@ -175,7 +180,7 @@ namespace Quiz
                     correct++;
                 }
                 toCorrect = false;
-                MessageBox.Show("Correct!");
+                MessageBox.Show("Correct!", "Your answer:");
                 if (elemIndex+1 == lines.Length - 1)
                 {
                     endBoard();
@@ -197,7 +202,7 @@ namespace Quiz
             {
 
                 toCorrect = true;
-                MessageBox.Show("Not correct :(");
+                MessageBox.Show("You must try\nbetter next time", "Your answer:");
                 textBox3.Text = lang[1];
                 label3.Visible = true;
                 textBox3.Visible = true;
